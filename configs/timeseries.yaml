@@ -1,0 +1,11 @@
+task: timeseries
+run_name: demo_timeseries
+data: data/raw/timeseries.csv
+time_column: date
+target: value
+lags: [1, 2, 3, 7, 14]
+seasonal_period: 7
+test_horizon: 28
+random_state: 42
+output_dir: outputs
+

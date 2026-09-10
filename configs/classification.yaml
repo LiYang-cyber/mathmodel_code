@@ -1,0 +1,10 @@
+task: classification
+run_name: demo_classification
+data: data/raw/classification.csv
+target: target
+models: [logistic, svm, random_forest, gradient_boosting]
+test_size: 0.2
+cv_folds: 5
+random_state: 42
+output_dir: outputs
+

@@ -1,0 +1,56 @@
+[workspace]
+name = "mathmodel-code"
+version = "0.1.0"
+description = "数学建模竞赛机器学习代码模板"
+channels = ["conda-forge"]
+platforms = ["win-64", "linux-64", "osx-64", "osx-arm64"]
+
+[dependencies]
+python = ">=3.11,<3.14"
+joblib = ">=1.3"
+libblas = { version = "*", build = "*openblas" }
+matplotlib = ">=3.7"
+numpy = ">=1.24"
+openpyxl = ">=3.1"
+pandas = ">=2.0"
+pyyaml = ">=6.0"
+scikit-learn = ">=1.3"
+
+[pypi-dependencies]
+mathmodel-code = { path = ".", editable = true, extras = ["dev"] }
+
+[feature.boosting.dependencies]
+lightgbm = ">=4"
+xgboost = ">=2"
+catboost = ">=1.2"
+
+[feature.explain.dependencies]
+shap = ">=0.44"
+
+[feature.timeseries.dependencies]
+statsmodels = ">=0.14"
+
+[feature.timeseries.pypi-dependencies]
+mlforecast = ">=0.13"
+
+[feature.anomaly.pypi-dependencies]
+pyod = ">=2"
+
+[feature.tuning.dependencies]
+optuna = ">=3.6"
+
+[environments]
+default = { solve-group = "default" }
+full = { features = ["boosting", "explain", "timeseries", "anomaly", "tuning"], solve-group = "full" }
+
+[tasks]
+demo-data = "python examples/make_demo_data.py"
+test = "pytest"
+lint = "ruff check ."
+demo-classification = { cmd = "mathmodel run -c configs/classification.yaml", depends-on = ["demo-data"] }
+demo-regression = { cmd = "mathmodel run -c configs/regression.yaml", depends-on = ["demo-data"] }
+demo-clustering = { cmd = "mathmodel run -c configs/clustering.yaml", depends-on = ["demo-data"] }
+demo-anomaly = { cmd = "mathmodel run -c configs/anomaly.yaml", depends-on = ["demo-data"] }
+demo-timeseries = { cmd = "mathmodel run -c configs/timeseries.yaml", depends-on = ["demo-data"] }
+demo = { depends-on = ["demo-classification", "demo-regression", "demo-clustering", "demo-anomaly", "demo-timeseries"] }
+check = { depends-on = ["lint", "test"] }
