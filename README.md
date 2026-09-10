@@ -60,6 +60,16 @@ pixi run demo
 ## 目录
 
 ```text
+grad-ml-template/        比赛时直接复制和修改的模板
+├── 01_data/             数据加载与 EDA
+├── 02_tabular/          baseline、LightGBM、XGBoost、CatBoost、Stacking
+├── 03_feature/          特征工程与 SHAP
+├── 04_timeseries/       ARIMA 与 MLForecast
+├── 05_detection/        PyOD 模型比较
+├── 06_clustering/       KMeans/GMM/DBSCAN
+├── 07_cv/               分类、回归、时序交叉验证
+├── 08_visualization/    预测和残差图
+└── 09_report/           论文图片汇总导出
 configs/                 可直接修改的任务配置
 data/raw/                原始附件
 data/processed/          清洗后数据
@@ -67,4 +77,12 @@ src/mathmodel/           核心代码
 examples/                演示数据生成器
 tests/                   回归测试
 outputs/                 每次实验结果
+```
+
+每个 `grad-ml-template` 文件既可作为代码片段导入，也可独立执行。例如：
+
+```powershell
+pixi run python grad-ml-template/01_data/eda.py data/raw/classification.csv --target target
+pixi run python grad-ml-template/02_tabular/baseline.py -c configs/classification.yaml
+pixi run python grad-ml-template/06_clustering/cluster.py data/raw/classification.csv --clusters 3
 ```
