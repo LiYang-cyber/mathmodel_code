@@ -21,8 +21,10 @@ def prepare_output(config: dict[str, Any]) -> Path:
 
 
 def save_figure(fig: plt.Figure, output: Path, name: str) -> None:
+    """同时导出预览位图和论文排版常用的两种矢量格式。"""
     fig.savefig(output / f"{name}.png", dpi=300, bbox_inches="tight")
     fig.savefig(output / f"{name}.svg", bbox_inches="tight")
+    fig.savefig(output / f"{name}.pdf", bbox_inches="tight")
     plt.close(fig)
 
 

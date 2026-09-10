@@ -16,7 +16,8 @@ pixi run mathmodel run --config configs/classification.yaml
 - `predictions.csv`：测试集真实值、预测值（分类含概率）
 - `best_model.joblib`：含预处理步骤的完整最佳模型
 - `run.json`：数据、参数、随机种子和运行环境
-- `confusion_matrix.png` / `prediction_scatter.png`：论文可用的 300 dpi 图片
+- `*.png`：用于预览或 Word 的 300 dpi 位图
+- `*.svg` / `*.pdf`：用于论文排版和后期编辑的矢量图
 
 ## 支持任务
 
@@ -55,7 +56,7 @@ pixi run demo
 2. 所有随机过程由 `random_state` 控制。
 3. 最佳模型依据交叉验证选择，测试集只用于最终报告。
 4. 类别列自动 one-hot；数值列自动中位数填补。
-5. 原始数据和运行产物默认不进入 Git。
+5. 每张结果图同时导出 PNG、SVG 和 PDF，原始数据和运行产物默认不进入 Git。
 
 ## 目录
 

@@ -12,6 +12,7 @@ import matplotlib.pyplot as plt
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from _bootstrap import repo_path
 
+from mathmodel.common import save_figure
 from mathmodel.io import load_table
 
 
@@ -34,9 +35,7 @@ def explain(model_path: str, data_path: str, output: str, target: str | None, ma
     out = repo_path(output)
     out.mkdir(parents=True, exist_ok=True)
     shap.plots.beeswarm(values, max_display=20, show=False)
-    plt.gcf().savefig(out / "shap_summary.png", dpi=300, bbox_inches="tight")
-    plt.gcf().savefig(out / "shap_summary.svg", bbox_inches="tight")
-    plt.close()
+    save_figure(plt.gcf(), out, "shap_summary")
     return out
 
 
@@ -53,4 +52,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-
