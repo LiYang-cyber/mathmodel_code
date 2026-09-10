@@ -25,6 +25,13 @@ pixi install -e full
 pixi run -e full python grad-ml-template/04_model/tabular/lightgbm.py -c configs/classification.yaml
 ```
 
+只做 ARIMA、VAR 或 MLForecast 时可安装较小的时序环境：
+
+```powershell
+pixi install -e forecast
+pixi run -e forecast python grad-ml-template/04_model/timeseries/var.py data/raw/timeseries.csv --time date --targets value related_value
+```
+
 ## 文件按做题顺序放置
 
 ```text
@@ -34,21 +41,30 @@ grad-ml-template/
 ├── 02_eda/
 │   └── eda.py                      缺失、重复、类型和描述统计
 ├── 03_feature/
-│   └── feature_engineering.py      日期、对数和交互特征
+│   ├── feature_engineering.py      日期、对数和交互特征
+│   ├── pca_svd.py                  PCA/SVD 降维
+│   └── correlation.py              相关系数和灰色关联
 ├── 04_model/
 │   ├── tabular/
 │   │   ├── baseline.py             分类/回归基线比较
 │   │   ├── lightgbm.py
 │   │   ├── xgboost.py
 │   │   ├── catboost.py
-│   │   └── stacking.py
+│   │   ├── stacking.py
+│   │   └── mlp.py                  BP/MLP 基线
 │   ├── timeseries/
 │   │   ├── arima.py
-│   │   └── mlforecast.py
+│   │   ├── mlforecast.py
+│   │   ├── grey_forecast.py        GM(1,1)
+│   │   └── var.py                  向量自回归
 │   ├── detection/
 │   │   └── pyod_compare.py
-│   └── clustering/
-│       └── cluster.py
+│   ├── clustering/
+│   │   └── cluster.py
+│   ├── evaluation/
+│   │   └── entropy_topsis.py
+│   └── optimization/
+│       └── particle_swarm.py
 ├── 05_validation/
 │   └── cross_validation.py         随机、分层、时序切分
 ├── 06_explain/
@@ -132,4 +148,4 @@ pixi run python grad-ml-template/05_validation/cross_validation.py --task timese
 pixi run python grad-ml-template/08_report/export_figures.py --source outputs --output outputs/report_figures
 ```
 
-配置字段见 [`docs/configuration.md`](docs/configuration.md)，比赛操作记录见 [`docs/competition_workflow.md`](docs/competition_workflow.md)。后续 Agent 的选型规则写在 [`AGENTS.md`](AGENTS.md)。
+配置字段见 [`docs/configuration.md`](docs/configuration.md)，比赛操作记录见 [`docs/competition_workflow.md`](docs/competition_workflow.md)。历年题目算法清单与本轮取舍见 [`docs/huawei_review_algorithms.md`](docs/huawei_review_algorithms.md)，后续 Agent 的选型规则写在 [`AGENTS.md`](AGENTS.md)。

@@ -16,6 +16,8 @@
   ├─ 时间依赖预测       → timeseries
   ├─ 无监督异常/故障    → detection
   └─ 分群与结构发现     → clustering
+  ├─ 多指标排序         → evaluation
+  └─ 决策变量寻优       → optimization
   ↓
 05_validation：按数据结构验证并比较候选方案
   ↓

@@ -16,6 +16,7 @@ dependencies = [
   "pandas>=2.0",
   "PyYAML>=6.0",
   "scikit-learn>=1.3",
+  "scipy>=1.10",
 ]
 
 [project.optional-dependencies]
@@ -44,4 +45,3 @@ addopts = "-q"
 [tool.ruff]
 line-length = 100
 target-version = "py310"
-

@@ -20,9 +20,11 @@ def main() -> None:
     rng = np.random.default_rng(42)
     dates = pd.date_range("2024-01-01", periods=180, freq="D")
     signal = 20 + .04 * np.arange(180) + 4 * np.sin(np.arange(180) * 2 * np.pi / 7) + rng.normal(0, .8, 180)
-    pd.DataFrame({"date": dates, "value": signal}).to_csv(output / "timeseries.csv", index=False)
+    related = 10 + 0.55 * signal + rng.normal(0, 0.5, 180)
+    pd.DataFrame({"date": dates, "value": signal, "related_value": related}).to_csv(
+        output / "timeseries.csv", index=False
+    )
 
 
 if __name__ == "__main__":
     main()
-
