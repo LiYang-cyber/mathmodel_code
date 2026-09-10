@@ -11,7 +11,7 @@ from sklearn.ensemble import RandomForestRegressor
 
 SCRIPT_DIR = str(Path(__file__).resolve().parent)
 sys.path = [path for path in sys.path if str(Path(path or ".").resolve()) != SCRIPT_DIR]
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 from _bootstrap import repo_path
 
 from mathmodel.io import load_table
@@ -49,4 +49,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

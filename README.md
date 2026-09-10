@@ -1,92 +1,135 @@
-# 数学建模机器学习模板库
+# grad-ml-template
 
-面向研究生数学建模竞赛中高频的表格分类/回归、时间序列预测、异常检测、聚类和模型解释任务。模板强调统一入口、可复现实验、模型横向比较与可直接用于论文的结果导出。
+研究生数学建模比赛用的机器学习代码架子。文件按做题顺序存放；目录里的算法只负责给出可运行基线，不限定 Agent 后面采用哪些模型。
 
-## 30 秒开始
+## 开始使用
+
+环境由 Pixi 管理：
 
 ```powershell
 pixi install
 pixi run demo-data
-pixi run mathmodel run --config configs/classification.yaml
+pixi run template-smoke
 ```
 
-结果保存在 `outputs/<run_name>/`：
+`template-smoke` 会执行 EDA、表格分类基线和聚类样例。检查代码及测试用：
 
-- `metrics.csv`：模型指标与排名
-- `predictions.csv`：测试集真实值、预测值（分类含概率）
-- `best_model.joblib`：含预处理步骤的完整最佳模型
-- `run.json`：数据、参数、随机种子和运行环境
-- `*.png`：用于预览或 Word 的 300 dpi 位图
-- `*.svg` / `*.pdf`：用于论文排版和后期编辑的矢量图
+```powershell
+pixi run check
+```
 
-## 基础任务入口
+LightGBM、XGBoost、CatBoost、SHAP、ARIMA、MLForecast 和 PyOD 放在 `full` 环境中，避免基础环境安装过慢：
 
-| 任务 | `task` | 随附基础样例 | 常用指标 |
-|---|---|---|---|
-| 分类/识别/故障诊断 | `classification` | Logistic、SVM、RandomForest、GradientBoosting | F1、ROC-AUC |
-| 指标/风险预测 | `regression` | Linear、Ridge、RandomForest、GradientBoosting | RMSE、R² |
-| 聚类/分群 | `clustering` | KMeans、GMM、DBSCAN | 轮廓系数 |
-| 异常检测 | `anomaly` | IsolationForest、LOF | 已标注时用 F1/AUC |
-| 时间序列 | `timeseries` | Naive、SeasonalNaive、线性滞后模型 | RMSE、MAE |
+```powershell
+pixi install -e full
+pixi run -e full python grad-ml-template/04_model/tabular/lightgbm.py -c configs/classification.yaml
+```
 
-需要全部增强模型时执行 `pixi install -e full`，再用 `pixi run -e full ...` 运行。默认环境保持轻量；可选库未安装时会清晰提示，不影响核心模板运行。
+## 文件按做题顺序放置
 
-表中的模型只是开箱可跑的基线，不是允许范围。Agent 应先根据问题机制和数据结构选型，再复用、替换或新增模型。sklearn 兼容模型可直接通过配置中的 `custom_models` 注册，其他接口可新增适配器。完整流程见 [`grad-ml-template/README.md`](grad-ml-template/README.md)。
+```text
+grad-ml-template/
+├── 01_data/
+│   └── load.py                     读取 CSV、Excel、Parquet
+├── 02_eda/
+│   └── eda.py                      缺失、重复、类型和描述统计
+├── 03_feature/
+│   └── feature_engineering.py      日期、对数和交互特征
+├── 04_model/
+│   ├── tabular/
+│   │   ├── baseline.py             分类/回归基线比较
+│   │   ├── lightgbm.py
+│   │   ├── xgboost.py
+│   │   ├── catboost.py
+│   │   └── stacking.py
+│   ├── timeseries/
+│   │   ├── arima.py
+│   │   └── mlforecast.py
+│   ├── detection/
+│   │   └── pyod_compare.py
+│   └── clustering/
+│       └── cluster.py
+├── 05_validation/
+│   └── cross_validation.py         随机、分层、时序切分
+├── 06_explain/
+│   └── shap.py                     特征贡献图
+├── 07_visualization/
+│   └── plot.py                     预测图和残差图
+└── 08_report/
+    └── export_figures.py           汇总论文图片
+```
+
+公共代码位于 `src/mathmodel/`。各阶段脚本可以独立运行，也可以导入其中的函数。原始附件放进 `data/raw/`，清洗后的数据写入 `data/processed/`，实验产物统一写入 `outputs/<run_name>/`。
+
+## 建议的做题顺序
+
+拿到附件后，先运行 `01_data/load.py` 和 `02_eda/eda.py`。这一步要弄清列类型、缺失值、重复记录、目标分布，以及预测时不可获得的泄漏字段。
+
+特征写在 `03_feature/`。会从数据中学习参数的操作，比如填补、缩放、编码和特征选择，应放进 sklearn Pipeline，并且只在训练折上拟合。
+
+随后判断问题属于哪种数据结构，再进入 `04_model/` 的相应子目录。表格、时间序列、异常检测和聚类不能共用同一种切分办法；验证方案放在 `05_validation/`，需要分组切分、滚动回测或嵌套交叉验证时，直接增加实现。
+
+确定候选方案后再做解释和画图。`06_explain/` 存模型解释，`07_visualization/` 存误差诊断与论文图，`08_report/` 收集最终图片。
+
+## 模型可以随题目增加
+
+内置模型只是样例。模型选择应取决于目标、数据生成方式、样本量、类别不平衡、时间或空间关系、外部约束以及比赛评价指标。
+
+兼容 sklearn `fit()`、`predict()` 接口的模型可直接在 YAML 中注册。例如加入 Extra Trees：
+
+```yaml
+task: classification
+data: data/raw/classification.csv
+target: target
+models: [logistic, extra_trees]
+
+custom_models:
+  extra_trees:
+    class_path: sklearn.ensemble.ExtraTreesClassifier
+    params:
+      n_estimators: 500
+      min_samples_leaf: 2
+      random_state: 42
+      n_jobs: -1
+```
+
+然后运行：
+
+```powershell
+pixi run mathmodel run -c path/to/config.yaml
+```
+
+深度学习、图模型、贝叶斯模型、空间统计模型等接口不同的实现，可以放进 `04_model/` 新建的任务子目录，或在 `src/mathmodel/` 编写适配器。不要为了套用已有脚本而放弃更合适的方法。
+
+## 输出约定
+
+一次受监督学习实验通常产生：
+
+- `metrics.csv`：交叉验证指标及测试集指标；
+- `predictions.csv`：逐样本真实值、预测值和可用的预测概率；
+- `best_model.joblib`：预处理与模型组成的 Pipeline；
+- `run.json`：配置、Python 版本、平台、时间和数据量；
+- 同名 `.png`、`.svg`、`.pdf`：300 dpi 预览图及两种矢量图。
+
+聚类、异常检测和时序任务使用各自的结果表，但仍保留指标、模型、运行信息及三种图片格式。`outputs/` 默认不提交到 Git。
 
 ## 常用命令
 
 ```powershell
-# 查看数据概况
-pixi run mathmodel inspect --data data/raw/classification.csv --target target
+# 查看数据前五行
+pixi run python grad-ml-template/01_data/load.py data/raw/classification.csv
 
-# 覆盖配置中的数据或目标列
-pixi run mathmodel run -c configs/classification.yaml --data path/to/data.xlsx --target 标签列
+# 生成 EDA 文件
+pixi run python grad-ml-template/02_eda/eda.py data/raw/classification.csv --target target
 
-# 时序预测
-pixi run mathmodel run -c configs/timeseries.yaml
+# 比较表格基线
+pixi run python grad-ml-template/04_model/tabular/baseline.py -c configs/classification.yaml
 
-# 一次跑完规范检查、测试或五类演示
-pixi run check
-pixi run demo
+# 预览时序交叉验证切分
+pixi run python grad-ml-template/05_validation/cross_validation.py --task timeseries --samples 100 --folds 5
+
+# 汇总输出目录中的图片
+pixi run python grad-ml-template/08_report/export_figures.py --source outputs --output outputs/report_figures
 ```
 
-配置字段说明见 [`docs/configuration.md`](docs/configuration.md)，比赛工作流见 [`docs/competition_workflow.md`](docs/competition_workflow.md)。视觉任务由于数据目录组织和硬件差异较大，提供选型指南而不强行包装训练器，见 [`docs/vision.md`](docs/vision.md)。
-
-## 设计原则
-
-1. 切分数据后再拟合缺失值、编码和标准化，避免数据泄漏。
-2. 所有随机过程由 `random_state` 控制。
-3. 最佳模型依据交叉验证选择，测试集只用于最终报告。
-4. 类别列自动 one-hot；数值列自动中位数填补。
-5. 每张结果图同时导出 PNG、SVG 和 PDF，原始数据和运行产物默认不进入 Git。
-6. 模板提供起点而非模型边界；模型、特征、验证方法和指标都允许按题目扩展。
-
-## 目录
-
-```text
-grad-ml-template/        比赛时直接复制和修改的模板
-├── 01_data/             数据加载与 EDA
-├── 02_tabular/          baseline、LightGBM、XGBoost、CatBoost、Stacking
-├── 03_feature/          特征工程与 SHAP
-├── 04_timeseries/       ARIMA 与 MLForecast
-├── 05_detection/        PyOD 模型比较
-├── 06_clustering/       KMeans/GMM/DBSCAN
-├── 07_cv/               分类、回归、时序交叉验证
-├── 08_visualization/    预测和残差图
-└── 09_report/           论文图片汇总导出
-configs/                 可直接修改的任务配置
-data/raw/                原始附件
-data/processed/          清洗后数据
-src/mathmodel/           核心代码
-examples/                演示数据生成器
-tests/                   回归测试
-outputs/                 每次实验结果
-```
-
-每个 `grad-ml-template` 文件既可作为代码片段导入，也可独立执行。例如：
-
-```powershell
-pixi run python grad-ml-template/01_data/eda.py data/raw/classification.csv --target target
-pixi run python grad-ml-template/02_tabular/baseline.py -c configs/classification.yaml
-pixi run python grad-ml-template/06_clustering/cluster.py data/raw/classification.csv --clusters 3
-```
+配置字段见 [`docs/configuration.md`](docs/configuration.md)，比赛操作记录见 [`docs/competition_workflow.md`](docs/competition_workflow.md)。后续 Agent 的选型规则写在 [`AGENTS.md`](AGENTS.md)。

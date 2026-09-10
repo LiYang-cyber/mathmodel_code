@@ -54,7 +54,7 @@ demo-anomaly = { cmd = "mathmodel run -c configs/anomaly.yaml", depends-on = ["d
 demo-timeseries = { cmd = "mathmodel run -c configs/timeseries.yaml", depends-on = ["demo-data"] }
 demo = { depends-on = ["demo-classification", "demo-regression", "demo-clustering", "demo-anomaly", "demo-timeseries"] }
 check = { depends-on = ["lint", "test"] }
-template-eda = { cmd = "python grad-ml-template/01_data/eda.py data/raw/classification.csv --target target", depends-on = ["demo-data"] }
-template-baseline = { cmd = "python grad-ml-template/02_tabular/baseline.py -c configs/classification.yaml", depends-on = ["demo-data"] }
-template-cluster = { cmd = "python grad-ml-template/06_clustering/cluster.py data/raw/classification.csv --features feature_0 feature_1 feature_2 --clusters 3", depends-on = ["demo-data"] }
+template-eda = { cmd = "python grad-ml-template/02_eda/eda.py data/raw/classification.csv --target target", depends-on = ["demo-data"] }
+template-baseline = { cmd = "python grad-ml-template/04_model/tabular/baseline.py -c configs/classification.yaml", depends-on = ["demo-data"] }
+template-cluster = { cmd = "python grad-ml-template/04_model/clustering/cluster.py data/raw/classification.csv --features feature_0 feature_1 feature_2 --clusters 3", depends-on = ["demo-data"] }
 template-smoke = { depends-on = ["template-eda", "template-baseline", "template-cluster"] }

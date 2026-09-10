@@ -5,26 +5,30 @@
 ```text
 题目与附件
   ↓
-01_data：加载、质量检查、EDA
+01_data：加载原始数据
   ↓
-任务结构判断
-  ├─ 普通表格分类/回归 → 02_tabular
-  ├─ 时间依赖预测       → 04_timeseries
-  ├─ 无监督异常/故障    → 05_detection
-  └─ 分群与结构发现     → 06_clustering
+02_eda：质量检查、探索数据和识别泄漏
   ↓
-03_feature：结合业务机制做特征工程与解释（可与建模迭代）
+03_feature：结合业务机制做特征工程
   ↓
-07_cv：按数据结构验证并比较候选方案
+04_model：判断任务结构并进入对应子目录
+  ├─ 普通表格分类/回归 → tabular
+  ├─ 时间依赖预测       → timeseries
+  ├─ 无监督异常/故障    → detection
+  └─ 分群与结构发现     → clustering
   ↓
-08_visualization：结论图和误差诊断
+05_validation：按数据结构验证并比较候选方案
   ↓
-09_report：汇总指标、预测、模型、运行清单和论文图片
+06_explain：解释最终模型与特征贡献
+  ↓
+07_visualization：结论图和误差诊断
+  ↓
+08_report：汇总指标、预测、模型、运行清单和论文图片
 ```
 
 ## 模板不是模型白名单
 
-`baseline.py`、`lightgbm.py`、`xgboost.py`、`catboost.py` 和 `stacking.py` 只是常见基线。实际选择应由问题机制和验证结果决定。可以：
+`04_model/` 中的 `baseline.py`、`lightgbm.py`、`xgboost.py`、`catboost.py`、`stacking.py` 等只是常见基线。实际选择应由问题机制和验证结果决定。可以：
 
 - 在 YAML 的 `custom_models` 中注册任何 sklearn 兼容估计器；
 - 为深度学习、图模型、概率模型、空间模型等非 sklearn 接口增加独立适配器；
@@ -32,4 +36,3 @@
 - 替换现有特征工程和评价指标。
 
 每个新方案应继续输出 `metrics.csv`、逐样本预测、模型/参数、运行环境以及 PNG/SVG/PDF 图片，确保论文结论可追溯。
-

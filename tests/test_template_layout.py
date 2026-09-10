@@ -2,14 +2,22 @@ import py_compile
 from pathlib import Path
 
 EXPECTED = [
-    "01_data/load.py", "01_data/eda.py",
-    "02_tabular/baseline.py", "02_tabular/lightgbm.py", "02_tabular/xgboost.py",
-    "02_tabular/catboost.py", "02_tabular/stacking.py",
-    "03_feature/feature_engineering.py", "03_feature/shap.py",
-    "04_timeseries/arima.py", "04_timeseries/mlforecast.py",
-    "05_detection/pyod_compare.py", "06_clustering/cluster.py",
-    "07_cv/cross_validation.py", "08_visualization/plot.py",
-    "09_report/export_figures.py",
+    "01_data/load.py",
+    "02_eda/eda.py",
+    "03_feature/feature_engineering.py",
+    "04_model/tabular/baseline.py",
+    "04_model/tabular/lightgbm.py",
+    "04_model/tabular/xgboost.py",
+    "04_model/tabular/catboost.py",
+    "04_model/tabular/stacking.py",
+    "04_model/timeseries/arima.py",
+    "04_model/timeseries/mlforecast.py",
+    "04_model/detection/pyod_compare.py",
+    "04_model/clustering/cluster.py",
+    "05_validation/cross_validation.py",
+    "06_explain/shap.py",
+    "07_visualization/plot.py",
+    "08_report/export_figures.py",
 ]
 
 
