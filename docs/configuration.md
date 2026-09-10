@@ -6,9 +6,26 @@
 
 - `target`：目标列，必填。
 - `drop_columns`：编号、姓名等不应进入模型的列。
-- `models`：候选模型列表。分类支持 `logistic`、`svm`、`random_forest`、`gradient_boosting`；回归支持 `linear`、`ridge`、`random_forest`、`gradient_boosting`。执行 `pixi install -e full` 后，两者还支持 `lightgbm`、`xgboost`、`catboost`。
+- `models`：本次参与比较的模型名称。仓库内置若干可运行基线，但它们不是模型白名单。
+- `custom_models`：通过完整 Python 类路径注册任意 sklearn 兼容估计器；第三方依赖需加入对应 Pixi feature。模型必须实现 `fit()` 和 `predict()`。
 - `test_size`：最终测试集比例，默认 0.2。
 - `cv_folds`：训练集交叉验证折数，默认 5。
+
+例如增加仓库未预置的 Extra Trees，无需修改核心代码：
+
+```yaml
+models: [logistic, extra_trees]
+custom_models:
+  extra_trees:
+    class_path: sklearn.ensemble.ExtraTreesClassifier
+    params:
+      n_estimators: 500
+      min_samples_leaf: 2
+      random_state: 42
+      n_jobs: -1
+```
+
+如果模型不兼容 sklearn 接口，新增适配器或独立流程脚本即可，不应为了迁就本模板而排除更合适的模型。
 
 ## 聚类
 

@@ -19,9 +19,9 @@ pixi run mathmodel run --config configs/classification.yaml
 - `*.png`：用于预览或 Word 的 300 dpi 位图
 - `*.svg` / `*.pdf`：用于论文排版和后期编辑的矢量图
 
-## 支持任务
+## 基础任务入口
 
-| 任务 | `task` | 默认候选模型 | 推荐指标 |
+| 任务 | `task` | 随附基础样例 | 常用指标 |
 |---|---|---|---|
 | 分类/识别/故障诊断 | `classification` | Logistic、SVM、RandomForest、GradientBoosting | F1、ROC-AUC |
 | 指标/风险预测 | `regression` | Linear、Ridge、RandomForest、GradientBoosting | RMSE、R² |
@@ -30,6 +30,8 @@ pixi run mathmodel run --config configs/classification.yaml
 | 时间序列 | `timeseries` | Naive、SeasonalNaive、线性滞后模型 | RMSE、MAE |
 
 需要全部增强模型时执行 `pixi install -e full`，再用 `pixi run -e full ...` 运行。默认环境保持轻量；可选库未安装时会清晰提示，不影响核心模板运行。
+
+表中的模型只是开箱可跑的基线，不是允许范围。Agent 应先根据问题机制和数据结构选型，再复用、替换或新增模型。sklearn 兼容模型可直接通过配置中的 `custom_models` 注册，其他接口可新增适配器。完整流程见 [`grad-ml-template/README.md`](grad-ml-template/README.md)。
 
 ## 常用命令
 
@@ -57,6 +59,7 @@ pixi run demo
 3. 最佳模型依据交叉验证选择，测试集只用于最终报告。
 4. 类别列自动 one-hot；数值列自动中位数填补。
 5. 每张结果图同时导出 PNG、SVG 和 PDF，原始数据和运行产物默认不进入 Git。
+6. 模板提供起点而非模型边界；模型、特征、验证方法和指标都允许按题目扩展。
 
 ## 目录
 

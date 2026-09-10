@@ -65,7 +65,29 @@ def _optional_model(name: str, task: str, seed: int):
     return cls(**kwargs)
 
 
-def _models(task: str, names: list[str], seed: int) -> dict[str, Any]:
+def _custom_model(name: str, specification: dict[str, Any]):
+    class_path = specification.get("class_path", "")
+    if "." not in class_path:
+        raise ValueError(f"自定义模型 {name} 的 class_path 必须是完整 Python 类路径")
+    module_name, class_name = class_path.rsplit(".", 1)
+    try:
+        model_class = getattr(importlib.import_module(module_name), class_name)
+    except (ImportError, AttributeError) as exc:
+        raise ImportError(f"无法导入自定义模型 {name}: {class_path}") from exc
+    estimator = model_class(**specification.get("params", {}))
+    if not callable(getattr(estimator, "fit", None)) or not callable(
+        getattr(estimator, "predict", None)
+    ):
+        raise TypeError(f"自定义模型 {name} 必须实现 fit() 和 predict()")
+    return estimator
+
+
+def _models(
+    task: str,
+    names: list[str],
+    seed: int,
+    custom_models: dict[str, dict[str, Any]] | None = None,
+) -> dict[str, Any]:
     defaults = {
         "classification": {
             "logistic": LogisticRegression(max_iter=2000),
@@ -80,14 +102,18 @@ def _models(task: str, names: list[str], seed: int) -> dict[str, Any]:
             "gradient_boosting": GradientBoostingRegressor(random_state=seed),
         },
     }[task]
+    custom_models = custom_models or {}
     selected = {}
     for name in names:
         if name in defaults:
             selected[name] = defaults[name]
         elif name in {"lightgbm", "xgboost", "catboost"}:
             selected[name] = _optional_model(name, task, seed)
+        elif name in custom_models:
+            selected[name] = _custom_model(name, custom_models[name])
         else:
-            raise ValueError(f"未知模型: {name}")
+            available = sorted([*defaults, "lightgbm", "xgboost", "catboost", *custom_models])
+            raise ValueError(f"未知模型: {name}；当前已注册: {', '.join(available)}")
     return selected
 
 
@@ -112,7 +138,7 @@ def run(config: dict[str, Any]) -> Path:
     names = config.get("models") or (["logistic", "svm", "random_forest", "gradient_boosting"]
                                       if task == "classification" else
                                       ["linear", "ridge", "random_forest", "gradient_boosting"])
-    models = _models(task, names, seed)
+    models = _models(task, names, seed, config.get("custom_models"))
     cv_folds = int(config.get("cv_folds", 5))
     if task == "classification":
         cv = StratifiedKFold(cv_folds, shuffle=True, random_state=seed)

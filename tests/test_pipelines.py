@@ -16,6 +16,21 @@ def test_all_pipelines(tmp_path, monkeypatch):
     out = tabular.run({**base, "task": "classification", "target": "target",
                        "models": ["logistic"], "cv_folds": 3, "run_name": "classification"})
     assert (out / "best_model.joblib").exists()
+    out = tabular.run({
+        **base,
+        "task": "classification",
+        "target": "target",
+        "models": ["extra_trees"],
+        "custom_models": {
+            "extra_trees": {
+                "class_path": "sklearn.ensemble.ExtraTreesClassifier",
+                "params": {"n_estimators": 20, "random_state": 2},
+            }
+        },
+        "cv_folds": 3,
+        "run_name": "custom_model",
+    })
+    assert (out / "best_model.joblib").exists()
     out = clustering.run({**base, "task": "clustering", "features": ["a", "b"],
                           "n_clusters": 2, "run_name": "clustering"})
     assert (out / "clusters.csv").exists()
