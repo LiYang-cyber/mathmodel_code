@@ -29,21 +29,25 @@ from sklearn.metrics import (
 )
 from sklearn.model_selection import KFold, StratifiedKFold, cross_validate, train_test_split
 from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from sklearn.svm import SVC
 
 from .common import prepare_output, save_figure, save_manifest
 from .io import load_table
+from .preprocessing import make_encoder, make_imputer, make_scaler
 
 
-def _preprocessor(X: pd.DataFrame) -> ColumnTransformer:
+def _preprocessor(X: pd.DataFrame, config: dict[str, Any] | None = None) -> ColumnTransformer:
+    config = config or {}
     numeric = X.select_dtypes(include=np.number).columns.tolist()
     categorical = X.columns.difference(numeric).tolist()
     return ColumnTransformer([
-        ("num", Pipeline([("impute", SimpleImputer(strategy="median")),
-                           ("scale", StandardScaler())]), numeric),
+        ("num", Pipeline([
+            ("impute", make_imputer(config.get("numeric_imputer", "median"),
+                                     int(config.get("random_state", 42)))),
+            ("scale", make_scaler(config.get("numeric_scaler", "zscore"))),
+        ]), numeric),
         ("cat", Pipeline([("impute", SimpleImputer(strategy="most_frequent")),
-                           ("encode", OneHotEncoder(handle_unknown="ignore"))]), categorical),
+                           ("encode", make_encoder(config.get("categorical_encoder", "onehot")))]), categorical),
     ])
 
 
@@ -150,7 +154,7 @@ def run(config: dict[str, Any]) -> Path:
         rank_metric = "cv_rmse"
     rows, fitted = [], {}
     for name, estimator in models.items():
-        pipe = Pipeline([("preprocess", _preprocessor(X_train)), ("model", estimator)])
+        pipe = Pipeline([("preprocess", _preprocessor(X_train, config)), ("model", estimator)])
         scores = cross_validate(pipe, X_train, y_train, cv=cv, scoring=scoring, n_jobs=1)
         pipe.fit(X_train, y_train)
         fitted[name] = pipe

@@ -61,4 +61,5 @@ template-baseline = { cmd = "python grad-ml-template/04_model/tabular/baseline.p
 template-cluster = { cmd = "python grad-ml-template/04_model/clustering/cluster.py data/raw/classification.csv --features feature_0 feature_1 feature_2 --clusters 3", depends-on = ["demo-data"] }
 template-pca = { cmd = "python grad-ml-template/03_feature/pca_svd.py data/raw/classification.csv --features feature_0 feature_1 feature_2 feature_3", depends-on = ["demo-data"] }
 template-pso = "python grad-ml-template/04_model/optimization/particle_swarm.py --dimensions 2 --particles 15 --iterations 30"
-template-smoke = { depends-on = ["template-eda", "template-baseline", "template-cluster", "template-pca", "template-pso"] }
+template-preprocess = { cmd = "python grad-ml-template/01_data/scaling.py data/raw/classification.csv --columns feature_0 feature_1 --method logistic --output data/processed/demo_scaled.csv", depends-on = ["demo-data"] }
+template-smoke = { depends-on = ["template-eda", "template-preprocess", "template-baseline", "template-cluster", "template-pca", "template-pso"] }

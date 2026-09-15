@@ -10,6 +10,7 @@ def test_all_pipelines(tmp_path, monkeypatch):
     frame = pd.DataFrame({"a": rng.normal(size=80), "b": rng.normal(size=80),
                           "category": np.where(rng.normal(size=80) > 0, "x", "y")})
     frame["target"] = (frame["a"] + frame["b"] > 0).astype(int)
+    frame.loc[0, "a"] = np.nan
     path = tmp_path / "table.csv"
     frame.to_csv(path, index=False)
     base = {"data": str(path), "output_dir": "outputs", "random_state": 2}
@@ -27,6 +28,9 @@ def test_all_pipelines(tmp_path, monkeypatch):
                 "params": {"n_estimators": 20, "random_state": 2},
             }
         },
+        "numeric_imputer": "random",
+        "numeric_scaler": "logistic",
+        "categorical_encoder": "ordinal",
         "cv_folds": 3,
         "run_name": "custom_model",
     })

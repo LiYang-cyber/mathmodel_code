@@ -6,6 +6,9 @@
 
 - `target`：目标列，必填。
 - `drop_columns`：编号、姓名等不应进入模型的列。
+- `numeric_imputer`：`median`、`mean`、`random` 或 `model`，默认 `median`。
+- `numeric_scaler`：`zscore`、`minmax`、`decimal`、`logistic` 或 `center`，默认 `zscore`。
+- `categorical_encoder`：`onehot` 或 `ordinal`，默认 `onehot`。
 - `models`：本次参与比较的模型名称。仓库内置若干可运行基线，但它们不是模型白名单。
 - `custom_models`：通过完整 Python 类路径注册任意 sklearn 兼容估计器；第三方依赖需加入对应 Pixi feature。模型必须实现 `fit()` 和 `predict()`。
 - `test_size`：最终测试集比例，默认 0.2。

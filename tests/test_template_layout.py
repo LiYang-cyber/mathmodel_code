@@ -3,10 +3,16 @@ from pathlib import Path
 
 EXPECTED = [
     "01_data/load.py",
+    "01_data/encoding.py",
+    "01_data/missing_values.py",
+    "01_data/scaling.py",
+    "01_data/outliers.py",
     "02_eda/eda.py",
     "03_feature/feature_engineering.py",
     "03_feature/pca_svd.py",
     "03_feature/correlation.py",
+    "03_feature/discretization.py",
+    "03_feature/distribution_transform.py",
     "04_model/tabular/baseline.py",
     "04_model/tabular/lightgbm.py",
     "04_model/tabular/xgboost.py",
