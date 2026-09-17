@@ -37,4 +37,8 @@
 - 按数据结构增加 GroupKFold、嵌套交叉验证、滚动回测等验证方案；
 - 替换现有特征工程和评价指标。
 
+`04_model/timeseries/deep_mamba.py` 已提供 S-Mamba、TimePro、STM3 和 MambaSL 的仓库内
+实现，使用方法与张量格式见 [`docs/deep_timeseries.md`](../docs/deep_timeseries.md)；
+`external_model.py` 用于调用完整上游实验工程。
+
 每个新方案应继续输出 `metrics.csv`、逐样本预测、模型/参数、运行环境以及 PNG/SVG/PDF 图片，确保论文结论可追溯。

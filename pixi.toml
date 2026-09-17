@@ -34,6 +34,15 @@ statsmodels = ">=0.14"
 [feature.timeseries.pypi-dependencies]
 mlforecast = ">=0.13"
 
+[feature.deep-timeseries]
+platforms = ["win-64", "linux-64", "osx-arm64"]
+
+[feature.deep-timeseries.dependencies]
+python = ">=3.11,<3.13"
+
+[feature.deep-timeseries.pypi-dependencies]
+torch = ">=2.2"
+
 [feature.anomaly.pypi-dependencies]
 pyod = ">=2"
 
@@ -43,6 +52,7 @@ optuna = ">=3.6"
 [environments]
 default = { solve-group = "default" }
 forecast = { features = ["timeseries"], solve-group = "forecast" }
+deep-timeseries = { features = ["deep-timeseries"], solve-group = "deep-timeseries" }
 full = { features = ["boosting", "explain", "timeseries", "anomaly", "tuning"], solve-group = "full" }
 
 [tasks]

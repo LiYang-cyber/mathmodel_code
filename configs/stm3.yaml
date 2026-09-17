@@ -1,0 +1,13 @@
+task: deep_timeseries
+model: stm3
+data: data/raw/stm3_windows.npz
+run_name: stm3
+output_dir: outputs
+epochs: 20
+batch_size: 16
+test_size: 0.2
+model_params:
+  d_model: 64
+  node_emb_dim: 16
+  num_experts: 3
+  scales: [1, 3, 5, 7]

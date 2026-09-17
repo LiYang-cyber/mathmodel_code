@@ -1,0 +1,16 @@
+task: deep_timeseries
+model: s_mamba
+data: data/raw/timeseries.csv
+time_column: date
+feature_columns: [value]
+seq_len: 96
+pred_len: 24
+run_name: s_mamba
+output_dir: outputs
+epochs: 20
+batch_size: 32
+test_size: 0.2
+model_params:
+  d_model: 128
+  d_state: 16
+  e_layers: 2

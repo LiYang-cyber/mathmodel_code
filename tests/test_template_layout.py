@@ -23,6 +23,8 @@ EXPECTED = [
     "04_model/timeseries/mlforecast.py",
     "04_model/timeseries/grey_forecast.py",
     "04_model/timeseries/var.py",
+    "04_model/timeseries/external_model.py",
+    "04_model/timeseries/deep_mamba.py",
     "04_model/detection/pyod_compare.py",
     "04_model/clustering/cluster.py",
     "04_model/evaluation/entropy_topsis.py",

@@ -49,3 +49,7 @@ custom_models:
 - `lags`：滞后阶数列表，应结合业务周期设置。
 - `seasonal_period`：季节朴素基线周期；日数据的周周期为 7。
 - `test_horizon`：按时间顺序留出的验证长度。
+
+仓库内的 S-Mamba、TimePro、STM3 和 MambaSL 使用 `task: deep_timeseries`，详见
+[`deep_timeseries.md`](deep_timeseries.md)。需要调用完整上游实验框架时使用
+`task: external_timeseries`，详见 [`external_timeseries.md`](external_timeseries.md)。

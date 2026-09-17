@@ -62,7 +62,9 @@ grad-ml-template/
 │   │   ├── arima.py
 │   │   ├── mlforecast.py
 │   │   ├── grey_forecast.py        GM(1,1)
-│   │   └── var.py                  向量自回归
+│   │   ├── var.py                  向量自回归
+│   │   ├── deep_mamba.py           仓库内 S-Mamba、TimePro、STM3、MambaSL
+│   │   └── external_model.py       完整上游实验框架适配器
 │   ├── detection/
 │   │   └── pyod_compare.py
 │   ├── clustering/
@@ -122,6 +124,8 @@ pixi run mathmodel run -c path/to/config.yaml
 ```
 
 深度学习、图模型、贝叶斯模型、空间统计模型等接口不同的实现，可以放进 `04_model/` 新建的任务子目录，或在 `src/mathmodel/` 编写适配器。不要为了套用已有脚本而放弃更合适的方法。
+
+S-Mamba、TimePro、STM3 和 MambaSL 已提供仓库内 PyTorch 实现，模型边界、张量格式和运行方法见 [`docs/deep_timeseries.md`](docs/deep_timeseries.md)。需要逐项复现上游工程时仍可使用 [`docs/external_timeseries.md`](docs/external_timeseries.md) 中的外部适配器。
 
 ## 输出约定
 

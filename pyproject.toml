@@ -23,6 +23,7 @@ dependencies = [
 boosting = ["lightgbm>=4", "xgboost>=2", "catboost>=1.2"]
 explain = ["shap>=0.44"]
 timeseries = ["statsmodels>=0.14", "mlforecast>=0.13"]
+deep-timeseries = ["torch>=2.2"]
 anomaly = ["pyod>=2"]
 tuning = ["optuna>=3.6"]
 vision = ["torch>=2", "torchvision>=0.17", "timm>=1"]
