@@ -95,6 +95,8 @@ grad-ml-template/
 
 确定候选方案后再做解释和画图。`06_explain/` 存模型解释，`07_visualization/` 存误差诊断与论文图，`08_report/` 收集最终图片。
 
+经典统计、多元分析、Bayes、马尔可夫、排队、存储和决策方法的统一 API 与选型边界见 [`docs/statistical_methods.md`](docs/statistical_methods.md)。这些方法位于 `mathmodel.statistics`、`mathmodel.time_series_analysis` 和 `mathmodel.decision`，可在题目脚本中直接组合。
+
 ## 模型可以随题目增加
 
 内置模型只是样例。模型选择应取决于目标、数据生成方式、样本量、类别不平衡、时间或空间关系、外部约束以及比赛评价指标。
