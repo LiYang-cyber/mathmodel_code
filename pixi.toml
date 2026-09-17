@@ -1,7 +1,7 @@
 [workspace]
 name = "mathmodel-code"
-version = "0.2.0"
-description = "数学建模与时序分析算法工具箱"
+version = "0.3.0"
+description = "数学建模模块化算法工具箱"
 channels = ["conda-forge"]
 platforms = ["win-64", "linux-64", "osx-64", "osx-arm64"]
 
@@ -50,6 +50,15 @@ python = ">=3.11,<3.13"
 [feature.deep-timeseries.pypi-dependencies]
 torch = ">=2.2"
 
+[feature.vision]
+platforms = ["win-64", "linux-64", "osx-arm64"]
+
+[feature.vision.dependencies]
+python = ">=3.11,<3.13"
+
+[feature.vision.pypi-dependencies]
+torch = ">=2.2"
+
 [feature.anomaly.pypi-dependencies]
 pyod = ">=2"
 
@@ -63,6 +72,7 @@ deep-timeseries = { features = ["deep-timeseries"], solve-group = "deep-timeseri
 full = { features = ["boosting", "explain", "timeseries", "anomaly", "tuning"], solve-group = "full" }
 decomposition = { features = ["timeseries", "decomposition"], solve-group = "decomposition" }
 prophet = { features = ["timeseries", "prophet"], solve-group = "prophet" }
+vision = { features = ["vision"], solve-group = "vision" }
 
 [tasks]
 demo-data = "python examples/make_demo_data.py"
