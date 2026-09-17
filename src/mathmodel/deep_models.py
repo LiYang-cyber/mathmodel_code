@@ -290,13 +290,59 @@ class MambaSL(nn.Module):
         return self.classifier(self.dropout(pooled))
 
 
+class MambaForecaster(nn.Module):
+    """Direct Mamba-style multivariate sequence forecaster."""
+
+    def __init__(self, seq_len: int, pred_len: int, n_vars: int, d_model: int = 64,
+                 d_state: int = 16, e_layers: int = 2, dropout: float = 0.1):
+        super().__init__()
+        self.seq_len, self.pred_len, self.n_vars = seq_len, pred_len, n_vars
+        self.embedding = nn.Linear(n_vars, d_model)
+        self.blocks = nn.ModuleList([
+            SSMBlock(d_model, d_state, 3, 2, dropout) for _ in range(e_layers)
+        ])
+        self.head = nn.Linear(seq_len * d_model, pred_len * n_vars)
+
+    def forward(self, inputs: Tensor) -> Tensor:
+        if inputs.ndim != 3 or inputs.shape[1:] != (self.seq_len, self.n_vars):
+            raise ValueError(f"Mamba 需要 [batch, {self.seq_len}, {self.n_vars}] 输入")
+        values, mean, scale = _normalise(inputs)
+        hidden = self.embedding(values)
+        for block in self.blocks:
+            hidden = block(hidden)
+        output = self.head(hidden.flatten(1)).view(-1, self.pred_len, self.n_vars)
+        return output * scale[:, :1] + mean[:, :1]
+
+
+class LSTMForecaster(nn.Module):
+    """Multivariate LSTM baseline using the same input/output contract as Mamba."""
+
+    def __init__(self, seq_len: int, pred_len: int, n_vars: int, hidden_size: int = 64,
+                 num_layers: int = 2, dropout: float = 0.1):
+        super().__init__()
+        self.seq_len, self.pred_len, self.n_vars = seq_len, pred_len, n_vars
+        self.lstm = nn.LSTM(n_vars, hidden_size, num_layers=num_layers, batch_first=True,
+                            dropout=dropout if num_layers > 1 else 0.0)
+        self.head = nn.Linear(hidden_size, pred_len * n_vars)
+
+    def forward(self, inputs: Tensor) -> Tensor:
+        if inputs.ndim != 3 or inputs.shape[1:] != (self.seq_len, self.n_vars):
+            raise ValueError(f"LSTM 需要 [batch, {self.seq_len}, {self.n_vars}] 输入")
+        values, mean, scale = _normalise(inputs)
+        hidden, _ = self.lstm(values)
+        output = self.head(hidden[:, -1]).view(-1, self.pred_len, self.n_vars)
+        return output * scale[:, :1] + mean[:, :1]
+
+
 def build_deep_timeseries_model(name: str, params: Mapping[str, Any]) -> nn.Module:
     """Construct a registered model from a name and keyword parameters."""
     registry: dict[str, type[nn.Module]] = {
+        "mamba": MambaForecaster,
         "s_mamba": SMamba,
         "timepro": TimePro,
         "stm3": STM3,
         "mambasl": MambaSL,
+        "lstm": LSTMForecaster,
     }
     key = name.lower()
     if key not in registry:

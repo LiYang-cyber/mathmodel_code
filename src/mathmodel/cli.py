@@ -4,21 +4,21 @@ import argparse
 import json
 from pathlib import Path
 
-from . import anomaly, clustering, external_timeseries, tabular, timeseries
+from . import anomaly, clustering, tabular, timeseries
 from .common import inspect_frame
 from .io import load_config, load_table
 
 
 def _run_deep_timeseries(config):
     try:
-        from .deep_timeseries.runner import run
+        from .deep_runner import run
     except ImportError as exc:
         raise ImportError("深度时序依赖未安装，请使用 pixi run -e deep-timeseries 执行") from exc
     return run(config)
 
 
 def parser() -> argparse.ArgumentParser:
-    root = argparse.ArgumentParser(prog="mathmodel", description="数学建模机器学习模板")
+    root = argparse.ArgumentParser(prog="mathmodel", description="数学建模算法工具箱")
     commands = root.add_subparsers(dest="command", required=True)
     run = commands.add_parser("run", help="运行配置文件")
     run.add_argument("-c", "--config", required=True)
@@ -45,7 +45,6 @@ def main(argv: list[str] | None = None) -> int:
     runners = {
         "classification": tabular.run, "regression": tabular.run,
         "clustering": clustering.run, "anomaly": anomaly.run, "timeseries": timeseries.run,
-        "external_timeseries": external_timeseries.run,
         "deep_timeseries": _run_deep_timeseries,
     }
     if config["task"] not in runners:

@@ -6,8 +6,15 @@ import pytest
 
 torch = pytest.importorskip("torch")
 
-from mathmodel.deep_timeseries import STM3, MambaSL, SMamba, TimePro
-from mathmodel.deep_timeseries.runner import run
+from mathmodel.deep_models import (
+    STM3,
+    LSTMForecaster,
+    MambaForecaster,
+    MambaSL,
+    SMamba,
+    TimePro,
+)
+from mathmodel.deep_runner import run
 
 
 @pytest.mark.parametrize(
@@ -43,6 +50,10 @@ from mathmodel.deep_timeseries.runner import run
             (2, 3, 4, 1),
         ),
         (MambaSL(n_features=4, n_classes=3, d_model=8, d_state=2), (2, 8, 4), (2, 3)),
+        (MambaForecaster(seq_len=8, pred_len=3, n_vars=4, d_model=8, d_state=2,
+                         e_layers=1), (2, 8, 4), (2, 3, 4)),
+        (LSTMForecaster(seq_len=8, pred_len=3, n_vars=4, hidden_size=8,
+                        num_layers=1), (2, 8, 4), (2, 3, 4)),
     ],
 )
 def test_model_shapes_and_gradients(model, inputs, expected):

@@ -1,7 +1,7 @@
 [workspace]
 name = "mathmodel-code"
-version = "0.1.0"
-description = "数学建模竞赛机器学习代码模板"
+version = "0.2.0"
+description = "数学建模与时序分析算法工具箱"
 channels = ["conda-forge"]
 platforms = ["win-64", "linux-64", "osx-64", "osx-arm64"]
 
@@ -34,6 +34,13 @@ statsmodels = ">=0.14"
 [feature.timeseries.pypi-dependencies]
 mlforecast = ">=0.13"
 
+[feature.decomposition.pypi-dependencies]
+EMD-signal = ">=1.6"
+vmdpy = ">=0.2"
+
+[feature.prophet.pypi-dependencies]
+prophet = ">=1.1"
+
 [feature.deep-timeseries]
 platforms = ["win-64", "linux-64", "osx-arm64"]
 
@@ -54,6 +61,8 @@ default = { solve-group = "default" }
 forecast = { features = ["timeseries"], solve-group = "forecast" }
 deep-timeseries = { features = ["deep-timeseries"], solve-group = "deep-timeseries" }
 full = { features = ["boosting", "explain", "timeseries", "anomaly", "tuning"], solve-group = "full" }
+decomposition = { features = ["timeseries", "decomposition"], solve-group = "decomposition" }
+prophet = { features = ["timeseries", "prophet"], solve-group = "prophet" }
 
 [tasks]
 demo-data = "python examples/make_demo_data.py"
@@ -66,10 +75,3 @@ demo-anomaly = { cmd = "mathmodel run -c configs/anomaly.yaml", depends-on = ["d
 demo-timeseries = { cmd = "mathmodel run -c configs/timeseries.yaml", depends-on = ["demo-data"] }
 demo = { depends-on = ["demo-classification", "demo-regression", "demo-clustering", "demo-anomaly", "demo-timeseries"] }
 check = { depends-on = ["lint", "test"] }
-template-eda = { cmd = "python grad-ml-template/02_eda/eda.py data/raw/classification.csv --target target", depends-on = ["demo-data"] }
-template-baseline = { cmd = "python grad-ml-template/04_model/tabular/baseline.py -c configs/classification.yaml", depends-on = ["demo-data"] }
-template-cluster = { cmd = "python grad-ml-template/04_model/clustering/cluster.py data/raw/classification.csv --features feature_0 feature_1 feature_2 --clusters 3", depends-on = ["demo-data"] }
-template-pca = { cmd = "python grad-ml-template/03_feature/pca_svd.py data/raw/classification.csv --features feature_0 feature_1 feature_2 feature_3", depends-on = ["demo-data"] }
-template-pso = "python grad-ml-template/04_model/optimization/particle_swarm.py --dimensions 2 --particles 15 --iterations 30"
-template-preprocess = { cmd = "python grad-ml-template/01_data/scaling.py data/raw/classification.csv --columns feature_0 feature_1 --method logistic --output data/processed/demo_scaled.csv", depends-on = ["demo-data"] }
-template-smoke = { depends-on = ["template-eda", "template-preprocess", "template-baseline", "template-cluster", "template-pca", "template-pso"] }

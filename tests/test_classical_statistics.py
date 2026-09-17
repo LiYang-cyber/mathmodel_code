@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
+from mathmodel.correlation import autocorrelation
 from mathmodel.decision import (
     beta_binomial_update,
     economic_order_quantity,
@@ -10,6 +11,8 @@ from mathmodel.decision import (
     markov_stationary,
     mm1_queue,
 )
+from mathmodel.diagnostics import ljung_box
+from mathmodel.signal import linear_trend
 from mathmodel.statistics import (
     canonical_correlation,
     discriminant_classifier,
@@ -19,7 +22,6 @@ from mathmodel.statistics import (
     principal_components,
     stepwise_regression,
 )
-from mathmodel.time_series_analysis import autocorrelation, linear_trend, ljung_box
 
 
 def test_multiple_and_stepwise_regression_recover_signal():

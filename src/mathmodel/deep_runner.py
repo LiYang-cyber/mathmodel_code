@@ -15,9 +15,9 @@ from sklearn.model_selection import train_test_split
 from torch import Tensor, nn
 from torch.utils.data import DataLoader, TensorDataset
 
-from ..common import prepare_output, save_figure, save_manifest
-from ..io import load_table
-from .models import build_deep_timeseries_model
+from .common import prepare_output, save_figure, save_manifest
+from .deep_models import build_deep_timeseries_model
+from .io import load_table
 
 
 def _set_seed(seed: int) -> None:

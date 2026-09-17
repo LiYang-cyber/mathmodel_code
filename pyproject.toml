@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "mathmodel-code"
-version = "0.1.0"
-description = "Reusable machine-learning templates for mathematical modeling competitions"
+version = "0.2.0"
+description = "Mathematical modeling and time-series analysis toolkit"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
@@ -23,6 +23,8 @@ dependencies = [
 boosting = ["lightgbm>=4", "xgboost>=2", "catboost>=1.2"]
 explain = ["shap>=0.44"]
 timeseries = ["statsmodels>=0.14", "mlforecast>=0.13"]
+decomposition = ["statsmodels>=0.14", "EMD-signal>=1.6", "vmdpy>=0.2"]
+prophet = ["prophet>=1.1"]
 deep-timeseries = ["torch>=2.2"]
 anomaly = ["pyod>=2"]
 tuning = ["optuna>=3.6"]
@@ -30,7 +32,8 @@ vision = ["torch>=2", "torchvision>=0.17", "timm>=1"]
 dev = ["pytest>=8", "ruff>=0.5"]
 all = [
   "lightgbm>=4", "xgboost>=2", "catboost>=1.2", "shap>=0.44",
-  "statsmodels>=0.14", "mlforecast>=0.13", "pyod>=2", "optuna>=3.6",
+  "statsmodels>=0.14", "mlforecast>=0.13", "EMD-signal>=1.6", "vmdpy>=0.2",
+  "pyod>=2", "optuna>=3.6",
 ]
 
 [project.scripts]
